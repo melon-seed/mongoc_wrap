@@ -8,22 +8,19 @@ SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 include_directories(include)
-include_directories(include/libbson-1.0)
-include_directories(include/libmongoc-1.0)
 
-link_directories(lib)
+find_package (mongoc-1.0 1.6 REQUIRED)
 
-add_library(mmongoc SHARED
+add_library(mmongoc
             src/library.c)
             
-target_link_libraries(mmongoc
-                      bson-1.0
-                      mongoc-1.0)
+target_link_libraries (mmongoc 
+                       PRIVATE mongo::mongoc_shared)
 
 
 
-add_executable(test1
-               test/test_main.c)
+# add_executable(test1 
+#                test/test_main.c)
 
-target_link_libraries(test1 
-mmongoc)
+# target_link_libraries(test1
+#                       mmongoc)
