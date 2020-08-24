@@ -40,7 +40,7 @@ int main()
     // 4. delete
     delete(oid, conn);
 
-
+    printf("hahahha");
     //must clear_up
     clear_up(conn);
     return 0;

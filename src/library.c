@@ -1,8 +1,14 @@
+/**
+ * @file library.c
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "library.h"
-
-void hello(void) {
-    printf("Hello, World!\n");
-}
 
 Connections_t* initialize(const char* url_string, const char* db_name, const char* collection_name) {
     mongoc_init();
@@ -24,42 +30,22 @@ void clear_up(Connections_t* conn) {
 }
 
 mongoc_cursor_t* query(bson_t* query, Connections_t* conn) {
-    Result_t result;
-    if (!conn || !query) {
-        result = (Result_t){.doc_count = 0, .documents = NULL};
-        return;
-    }
-    const bson_t* doc;
     mongoc_cursor_t *cursor;
-    char* str;
-
-    cursor = mongoc_collection_find_with_opts(conn->collection, query, NULL, NULL);
-
-    int doc_count = 0;
-    while (mongoc_cursor_next (cursor, &doc)) {
-        str = bson_as_canonical_extended_json (doc, NULL);
-        printf ("%s\n", str);
-        bson_free (str);
-    }
     cursor = mongoc_collection_find_with_opts(conn->collection, query, NULL, NULL);
     return cursor;
 }
 
 void insert(bson_t *doc, Connections_t* conn) {
     bson_error_t error;
-
-//    const char *json = "{\"name\": {\"first\":\"Grace\", \"last\":\"Hopper\"}}";
-    // bson = bson_new_from_json ((const uint8_t *)doc, -1, &error);
-
-    // if (!bson) {
-    //     fprintf (stderr, "%s\n", error.message);
-    //     return;
-    // }
-
     if (!mongoc_collection_insert_one (conn->collection, doc, NULL, NULL, &error)) {
         fprintf (stderr, "%s\n", error.message);
     }
-    // bson_destroy (bson);
+}
+
+void insert_string(char *doc, Connections_t *conn){
+    bson_error_t error;
+    bson_t *doc_bson = bson_new_from_json((const uint8_t *)doc, -1, &error);
+    insert(doc_bson, conn);
 }
 
 void update(bson_oid_t *oid, bson_t *doc, Connections_t *conn)
@@ -73,6 +59,18 @@ void update(bson_oid_t *oid, bson_t *doc, Connections_t *conn)
     bson_destroy(query);
 }
 
+void update_string(uint8_t *oid, char *doc, Connections_t *conn)
+{
+    bson_error_t error;
+    bson_oid_t oid_bson;
+    for (int i = 0; i < 12; ++i)
+    {
+        oid_bson.bytes[i] = oid[i];
+    }
+    bson_t *doc_bson = bson_new_from_json((const uint8_t *)doc, -1, &error);
+    update(&oid_bson, doc_bson, conn);
+}
+
 void delete(bson_oid_t *oid, Connections_t *conn)
 {
     bson_error_t error;
@@ -84,4 +82,14 @@ void delete(bson_oid_t *oid, Connections_t *conn)
         fprintf (stderr, "Delete failed: %s\n", error.message);
             }
     bson_destroy(doc);
+}
+
+void delete_(uint8_t *oid, Connections_t *conn)
+{
+    bson_oid_t oid_bson;
+    for (int i = 0; i < 12; ++i)
+    {
+        oid_bson.bytes[i] = oid[i];
+    }
+    delete(&oid_bson, conn);
 }
