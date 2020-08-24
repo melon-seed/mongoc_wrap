@@ -11,7 +11,7 @@
 #ifndef MONGOCWRAPPER_LIBRARY_H
 #define MONGOCWRAPPER_LIBRARY_H
 #include <stdio.h>
-#include <mongoc/mongoc.h>
+#include <mongoc.h>
 
 typedef struct {
     mongoc_client_t *client;

@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.0.0)
 project(MangoLib)
 
 
-# SET(CMAKE_BUILD_TYPE "Debug")
-# SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
-# SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+SET(CMAKE_BUILD_TYPE "Debug")
+SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 
 include_directories(include)
 
@@ -28,13 +28,8 @@ else()
                         PRIVATE mongo::mongoc_static)
 endif(WIN32)
     
+add_executable(test
+               test/test_main.c)
 
-
-
-
-
-# add_executable(test1 
-#                test/test_main.c)
-
-# target_link_libraries(test1 
-#                       mmongoc)
+target_link_libraries(test
+mmongoc)
