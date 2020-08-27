@@ -62,13 +62,13 @@ void update(bson_oid_t *oid, bson_t *doc, Connections_t *conn)
 void update_string(uint8_t *oid, char *doc, Connections_t *conn)
 {
     bson_error_t error;
-    bson_oid_t oid_bson;
+    bson_oid_t *oid_bson;
     for (int i = 0; i < 12; ++i)
     {
-        oid_bson.bytes[i] = oid[i];
+        oid_bson->bytes[i] = oid[i];
     }
     bson_t *doc_bson = bson_new_from_json((const uint8_t *)doc, -1, &error);
-    update(&oid_bson, doc_bson, conn);
+    update(oid_bson, doc_bson, conn);
 }
 
 void delete(bson_oid_t *oid, Connections_t *conn)
